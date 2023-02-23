@@ -1,0 +1,86 @@
+@charset "UTF-8";
+
+.relative {
+  position: relative;
+  width: 336px;
+}
+.area0 {
+  position: absolute;
+  left: 0;
+}
+.area1 {
+  position: absolute;
+  left: 48px;
+}
+.area2 {
+  position: absolute;
+  left: 96px;
+}
+.area3 {
+  position: absolute;
+  left: 112px;
+}
+.area4 {
+  position: absolute;
+  left: 144px;
+}
+.area5 {
+  position: absolute;
+  left: 192px;
+}
+.area6 {
+  position: absolute;
+  left: 224px;
+}
+.area7 {
+  position: absolute;
+  left: 240px;
+}
+.area8 {
+  position: absolute;
+  left: 288px;
+}
+
+.w-100px {
+  width: 100px !important;
+}
+
+.direction {
+  position: absolute;
+  top: 8px;
+  left: 126px;
+}
+
+.stamina {
+  position: absolute;
+  top: 295px;
+  left: 8px;
+}
+
+.score {
+  position: absolute;
+  top: 295px;
+  left: 228px;
+}
+
+.w-224px {
+	width: 224px !important;
+}
+
+.message {
+  position: absolute;
+  top: 152px;
+  left: 56px;
+  font-weight: bold;
+}
+
+.inGameButton {
+  position: absolute;
+  top: 152px;
+  left:118px;
+  font-weight: bold;
+}
+
+.modal-dialog-center {
+	padding-top: 94px;
+}

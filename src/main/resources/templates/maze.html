@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" th:href="@{/css/maze.css}">
+  <title>Maze</title>
+</head>
+<body>
+  <div class="card mx-auto mt-2" style="width: 338px;">
+    <!-- 上部メニュー -->
+    <div class="card-header">
+      <ul class="nav nav-tabs card-header-tabs">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="true">Maze</a>
+        </li>
+        <li class="nav-item">
+          <a th:unless="${disabled}" class="nav-link" href="map">Map</a>
+          <a th:if="${disabled}" class="nav-link">Map</a>
+        </li>
+        <li class="nav-item">
+          <a th:unless="${disabled}" class="nav-link" href="menu">Menu</a>
+          <a th:if="${disabled}" class="nav-link">Menu</a>
+        </li>
+        <li class="nav-item">
+          <a th:unless="${disabled}" class="nav-link btn" data-toggle="modal" data-target="#helpModal">?</a>
+          <a th:if="${disabled}" class="nav-link btn" data-toggle="modal" data-target="#helpModal">?</a>
+        </li>
+      </ul>
+    </div>
+    <!-- メイン画面 -->
+    <div class="relative">
+      <img src="/img/back.png">
+      <img th:unless="${area0 == ''}" class="area0" th:src="${area0}">
+      <img th:unless="${area1 == ''}" class="area1" th:src="${area1}">
+      <img th:unless="${area2 == ''}" class="area2" th:src="${area2}">
+      <img th:unless="${area3 == ''}" class="area3" th:src="${area3}">
+      <img th:unless="${area4 == ''}" class="area4" th:src="${area4}">
+      <img th:unless="${area5 == ''}" class="area5" th:src="${area5}">
+      <img th:unless="${area6 == ''}" class="area6" th:src="${area6}">
+      <img th:unless="${area7 == ''}" class="area7" th:src="${area7}">
+      <img th:unless="${area8 == ''}" class="area8" th:src="${area8}">
+      <!-- 方角表示 -->
+      <button type="button" class="btn-sm btn-outline-primary w-25 direction" disabled th:text="${dir}">direction</button>
+      <!-- スタミナ表示 -->
+      <button type="button" class="btn-sm btn-outline-primary w-100px stamina" disabled th:text="${stamina}">stamina</button>
+      <!-- スコア表示 -->
+      <button type="button" class="btn-sm btn-outline-primary w-100px score" disabled th:text="${score}">score</button>
+      <!-- In Game Button -->
+      <th:block th:if="${inGameBtn}">
+        <form method="POST" action="/maze/maze">
+          <input type="submit" class="btn-sm btn-outline-primary w-100px inGameButton" name="exit" th:value="${inGameBtn}">
+        </form>
+      </th:block>
+    </div>
+    <!-- コントローラー部 -->
+    <div class="card-body" th:classappend="${disabled}?'bg-dark':''">
+      <div class="text-center">
+        <form method="POST" action="/maze/maze">
+          <input type="submit" class="btn-sm btn-outline-primary w-100px" name="forward" value="▲Forward" th:disabled="${disabled}"><br>
+          <input type="submit" class="btn-sm btn-outline-primary w-100px mt-1" name="left" value="◀Turn Left" th:disabled="${disabled}">
+          <input type="submit" class="btn-sm btn-outline-primary w-100px mt-1" name="right" value="Turn Right▶" th:disabled="${disabled}"><br>
+          <input type="submit" class="btn-sm btn-outline-primary w-100px mt-1" name="turn" value="▼Turn" th:disabled="${disabled}">
+        </form>
+      </div>
+    </div>
+    <!-- バージョン表示 -->
+    <div class="card-footer">
+      <div class="text-end">
+        <span th:text="'Maze Ver. ' + ${version}"></span>
+    </div>
+  </div>
+  <!-- モーダルウィンドウ(${msg})-->
+  <th:block th:if="${msg}">
+    <div class="modal" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true"
+      data-bs-backdrop="static"><!-- 背景クリックで消えないように設定 -->
+      <div class="modal-dialog modal-sm modal-dialog-center">
+        <div class="modal-content">
+          <div class="modal-header">
+            <b class="modal-title" id="infoModalLabel">Information</b>
+          </div>
+          <div class="modal-body" th:utext="${msg}">Message</div>
+          <div class="modal-footer">
+            <button type="button" class="btn-sm btn-outline-primary" data-bs-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+      $(window).on('load',function(){
+        $('#infoModal').modal('show');
+      });
+    </script>
+  </th:block>
+  
+  <!-- 説明モーダルウィンドウ -->
+  <div class="modal" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content">
+        <div class="modal-header">
+          <b class="modal-title" id="helpModalLabel">How To Play</b>
+        </div>
+        <div class="modal-body" th:utext="#{help}">help</div>
+        <div class="modal-footer">
+          <button type="button" class="btn-sm btn-outline-primary" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+  <!-- Option 2: Separate Popper and Bootstrap JS -->
+  <!--
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+  -->
+</body>
+</html>

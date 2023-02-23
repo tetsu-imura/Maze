@@ -1,0 +1,18 @@
+.w-100px {
+  width: 100px !important;
+}
+
+.introduction {
+  position: absolute;
+  top: 90px;
+  left: 0px;
+  width: 336px;
+  color: white;
+  font-weight: bold;
+}
+
+.start {
+  position: absolute;
+  top: 290px;
+  left: 118px;
+}

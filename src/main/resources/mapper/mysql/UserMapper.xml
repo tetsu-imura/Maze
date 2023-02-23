@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="com.example.demo.domain.repository.UserMapper">
+
+  <select id="getBest5" resultType="User">
+    SELECT
+      name,
+      score,
+      date
+    FROM
+      users
+    ORDER BY
+      score DESC,
+      date DESC
+    LIMIT
+      5
+    ;
+  </select>
+
+  <insert id="addNewRanker">
+    INSERT INTO users
+      (name, score, date)
+    VALUES
+      (#{name}, #{score}, #{date})
+    ;
+  </insert>
+
+</mapper>
