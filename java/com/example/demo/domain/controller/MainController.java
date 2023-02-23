@@ -35,7 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MainController {
 	
-	final static String VERSION = "1.1.0";
+	final static String VERSION = "1.1.1";
 	
 	// マップサイズの定義(必ず奇数)
 	final static int MAP_WIDTH  = 17;
