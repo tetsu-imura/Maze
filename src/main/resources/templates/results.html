@@ -26,7 +26,7 @@
     </ul>
     <div class="card-body text-center">
       <form method="POST" action="/maze/results">
-        <input th:if="${rankIn}" type="text" class="mb-2" id="name" name="name" minlength="3" maxlength="12" placeholder="Your name" required>
+        <input th:if="${rankIn}" type="text" class="mb-2" id="name" name="name" minlength="3" maxlength="12" placeholder="Your name" required autofocus>
         <input th:if="${rankIn}" type="hidden" id="score" name="score" th:value="${totalScore}">
         <input th:if="${rankIn}" type="hidden" id="number" name="number" th:value="${number}">
         <br th:if="${rankIn}">
