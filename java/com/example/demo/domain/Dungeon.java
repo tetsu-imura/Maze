@@ -26,9 +26,9 @@ public class Dungeon {
 	
 	private int			mapWidth;			// マップの横幅
 	private int			mapHeight;			// マップの縦幅
-	private int[][]		map;				// マップ
-	private boolean[][]	walked;				// 歩いた箇所マップ
-	private Event[][]	event;				// イベントマップ
+	private int[]		map;				// マップ
+	private boolean[]	walked;				// 歩いた箇所マップ
+	private Event[]		event;				// イベントマップ
 	private int[]		view				// 疑似3D描画用ビュー
 						= new int[VIEW_W * VIEW_H];
 	private boolean		goalFlg;			// ゴール設定フラグ
@@ -42,9 +42,9 @@ public class Dungeon {
 		
 		mapWidth	= width;
 		mapHeight	= height;
-		map			= new int[mapWidth][mapHeight];
-		walked		= new boolean[mapWidth][mapHeight];
-		event		= new Event[mapWidth][mapHeight];
+		map			= new int[mapWidth * mapHeight];
+		walked		= new boolean[mapWidth * mapHeight];
+		event		= new Event[mapWidth * mapHeight];
 		goalFlg		= false;
 	}
 	
@@ -70,20 +70,18 @@ public class Dungeon {
 	 */
 	public void init(int startX, int startY) {
 		
-		// スタート地点の設定。
-		event[startX][startY] = Event.START;
-		
 		// ブロックで全部埋める。
-		for(int y = 0; y < mapHeight; y++) {
-			for(int x = 0; x < mapWidth; x++) {
-				map[x][y] = BLOCK;
-				walked[x][y] = false;
-				event[x][y] = Event.NONE;
-			}
+		for(int i = 0; i < mapWidth * mapHeight; i++) {
+			map[i]		= BLOCK;
+			walked[i]	= false;
+			event[i]	= Event.NONE;
 		}
 		
+		// スタート地点の設定。
+		event[startX + mapWidth * startY] = Event.START;
+		
 		// 再帰呼び出しで迷路を作成。
-		map[startX][startY] = PATH;
+		map[startX + mapWidth * startY] = PATH;
 		dig(startX, startY);
 		
 		// ランダムで適度(mapWidth/2)に通り道を作る。
@@ -93,20 +91,20 @@ public class Dungeon {
 			int ry = new Random().nextInt(mapHeight - 2) + 1;
 			
 			// 通路ならやり直し。
-			if(map[rx][ry] == PATH) {
+			if(map[rx + mapWidth * ry] == PATH) {
 				continue;
 			}
 			
 			// 左右がブロック、かつ上下が通路の場合
-			if(map[rx - 1][ry] == BLOCK && map[rx + 1][ry] == BLOCK
-			&& map[rx][ry - 1] == PATH && map[rx][ry + 1] == PATH) {
-				map[rx][ry] = PATH;
+			if(map[rx - 1 + mapWidth * ry] == BLOCK && map[rx + 1 + mapWidth * ry] == BLOCK
+			&& map[rx + mapWidth * (ry - 1)] == PATH && map[rx + mapWidth * (ry + 1)] == PATH) {
+				map[rx + mapWidth * ry] = PATH;
 				i++;
 			} else
 			// 上下がブロック、かつ左右が通路の場合
-			if(map[rx][ry - 1] == BLOCK && map[rx][ry + 1] == BLOCK
-			&& map[rx - 1][ry] == PATH && map[rx + 1][ry] == PATH) {
-				map[rx][ry] = PATH;
+			if(map[rx + mapWidth * (ry - 1)] == BLOCK && map[rx + mapWidth * (ry + 1)] == BLOCK
+			&& map[rx - 1 + mapWidth * ry] == PATH && map[rx + 1 + mapWidth * ry] == PATH) {
+				map[rx + mapWidth * ry] = PATH;
 				i++;
 			}
 		}
@@ -135,9 +133,9 @@ public class Dungeon {
 			case NORTH:
 				if(y - 2 > 0) {
 					// ２つ先が壁の場合、掘り進める。
-					if(map[x][y - 2] == BLOCK) {
-						map[x][y - 1] = PATH;
-						map[x][y - 2] = PATH;
+					if(map[x + mapWidth * (y - 2)] == BLOCK) {
+						map[x + mapWidth * (y - 1)] = PATH;
+						map[x + mapWidth * (y - 2)] = PATH;
 						dig(x, y - 2);
 					}
 				}
@@ -145,9 +143,9 @@ public class Dungeon {
 			case EAST:
 				if(x + 2 < mapWidth) {
 					// ２つ先が壁の場合、掘り進める。
-					if(map[x + 2][y] == BLOCK) {
-						map[x + 1][y] = PATH;
-						map[x + 2][y] = PATH;
+					if(map[x + 2 + mapWidth * y] == BLOCK) {
+						map[x + 1 + mapWidth * y] = PATH;
+						map[x + 2 + mapWidth * y] = PATH;
 						dig(x + 2, y);
 					}
 				}
@@ -155,9 +153,9 @@ public class Dungeon {
 			case SOUTH:
 				if(y + 2 < mapHeight) {
 					// ２つ先が壁の場合、掘り進める。
-					if(map[x][y + 2] == BLOCK) {
-						map[x][y + 1] = PATH;
-						map[x][y + 2] = PATH;
+					if(map[x + mapWidth * (y + 2)] == BLOCK) {
+						map[x + mapWidth * (y + 1)] = PATH;
+						map[x + mapWidth * (y + 2)] = PATH;
 						dig(x, y + 2);
 					}
 				}
@@ -165,9 +163,9 @@ public class Dungeon {
 			case WEST:
 				if(x - 2 > 0) {
 					// ２つ先が壁の場合、掘り進める。
-					if(map[x - 2][y] == BLOCK) {
-						map[x - 1][y] = PATH;
-						map[x - 2][y] = PATH;
+					if(map[x - 2 + mapWidth * y] == BLOCK) {
+						map[x - 1 + mapWidth * y] = PATH;
+						map[x - 2 + mapWidth * y] = PATH;
 						dig(x - 2, y);
 					}
 				}
@@ -178,7 +176,7 @@ public class Dungeon {
 		// 最初にここに来た時にゴールを設定する。
 		if(!goalFlg) {
 			goalFlg = true;
-			event[x][y] = Event.GOAL;
+			event[x + mapWidth * y] = Event.GOAL;
 		}
 	}
 	
@@ -210,16 +208,16 @@ public class Dungeon {
 				y = randOdd(mapWidth - 1);
 				
 				// ブロックならイベント設置不可。
-				if(map[x][y] == BLOCK) {
+				if(map[x + mapWidth * y] == BLOCK) {
 					continue;
 				}
 				// すでにイベント設置済みなら不可。
-				if(event[x][y] != Event.NONE) {
+				if(event[x + mapWidth * y] != Event.NONE) {
 					continue;
 				}
 				break;
 			}
-			event[x][y] = ev;
+			event[x + mapWidth * y] = ev;
 		}
 	}
 	
@@ -309,7 +307,7 @@ public class Dungeon {
 			}
 			// Viewにマップ情報をコピーする。
 			else {
-				view[i] = map[currentX][currentY];
+				view[i] = map[currentX + mapWidth * currentY];
 			}
 		}
 	}
@@ -342,7 +340,7 @@ public class Dungeon {
 				return false;
 			}
 			// 一歩北が壁の場合、進めない。
-			if(map[x][y-1] == BLOCK) {
+			if(map[x + mapWidth * (y - 1)] == BLOCK) {
 				return false;
 			}
 			break;
@@ -351,7 +349,7 @@ public class Dungeon {
 				return false;
 			}
 			// 一歩東が壁の場合、進めない。
-			if(map[x+1][y] == BLOCK) {
+			if(map[x + 1 + mapWidth * y] == BLOCK) {
 				return false;
 			}
 			break;
@@ -360,7 +358,7 @@ public class Dungeon {
 				return false;
 			}
 			// 一歩南が壁の場合、進めない。
-			if(map[x][y+1] == BLOCK) {
+			if(map[x + mapWidth * (y + 1)] == BLOCK) {
 				return false;
 			}
 			break;
@@ -369,7 +367,7 @@ public class Dungeon {
 				return false;
 			}
 			// 一歩西が壁の場合、進めない。
-			if(map[x-1][y] == BLOCK) {
+			if(map[x - 1 + mapWidth * y] == BLOCK) {
 				return false;
 			}
 			break;
@@ -405,14 +403,14 @@ public class Dungeon {
 				// マップ情報をミニマップにコピーする。
 				else {
 					// まだ歩いてない箇所はUNKNOWNにする。
-					if(!walked[diffX][diffY]) {
+					if(!walked[diffX + mapWidth * diffY]) {
 						miniMap[i + MINIMAP_W * j] = UNKNOWN;
 					} else {
-						if(event[diffX][diffY] == Event.GOAL) {
+						if(event[diffX + mapWidth * diffY] == Event.GOAL) {
 							// ゴール地点はゴールの画像を表示する。
 							miniMap[i + MINIMAP_W * j] = GOAL;
 						} else {
-							miniMap[i + MINIMAP_W * j] = map[diffX][diffY];
+							miniMap[i + MINIMAP_W * j] = map[diffX + mapWidth * diffY];
 						}
 					}
 				}
@@ -430,41 +428,41 @@ public class Dungeon {
 	public void walked(int x, int y) {
 		
 		// 現在地(x,y)のフラグをONにする。
-		walked[x][y] = true;
+		walked[x + mapWidth * y] = true;
 		
 		// 上下左右がブロックならフラグをONにする。
-		if(map[x-1][y] == BLOCK) {
-			walked[x-1][y] = true;
+		if(map[x - 1 + mapWidth * y] == BLOCK) {
+			walked[x - 1 + mapWidth * y] = true;
 		}
-		if(map[x+1][y] == BLOCK) {
-			walked[x+1][y] = true;
+		if(map[x + 1 + mapWidth * y] == BLOCK) {
+			walked[x + 1 + mapWidth * y] = true;
 		}
-		if(map[x][y-1] == BLOCK) {
-			walked[x][y-1] = true;
+		if(map[x + mapWidth * (y - 1)] == BLOCK) {
+			walked[x + mapWidth * (y - 1)] = true;
 		}
-		if(map[x][y+1] == BLOCK) {
-			walked[x][y+1] = true;
+		if(map[x + mapWidth * (y + 1)] == BLOCK) {
+			walked[x + mapWidth * (y + 1)] = true;
 		}
 		
 		// 左と上がブロックなら左上のフラグON
-		if(map[x-1][y] == BLOCK
-		&& map[x][y-1] == BLOCK) {
-			walked[x-1][y-1] = true;
+		if(map[x - 1 + mapWidth * y] == BLOCK
+		&& map[x + mapWidth * (y - 1)] == BLOCK) {
+			walked[x - 1 + mapWidth * (y - 1)] = true;
 		}
 		// 右と上がブロックなら右上のフラグON
-		if(map[x+1][y] == BLOCK
-		&& map[x][y-1] == BLOCK) {
-			walked[x+1][y-1] = true;
+		if(map[x + 1 + mapWidth * y] == BLOCK
+		&& map[x + mapWidth * (y - 1)] == BLOCK) {
+			walked[x + 1 + mapWidth * (y - 1)] = true;
 		}
 		// 左と下がブロックなら左下のフラグON
-		if(map[x-1][y] == BLOCK
-		&& map[x][y+1] == BLOCK) {
-			walked[x-1][y+1] = true;
+		if(map[x - 1 + mapWidth * y] == BLOCK
+		&& map[x + mapWidth * (y + 1)] == BLOCK) {
+			walked[x - 1 + mapWidth * (y + 1)] = true;
 		}
 		// 右と下がブロックなら右下のフラグON
-		if(map[x+1][y] == BLOCK
-		&& map[x][y+1] == BLOCK) {
-			walked[x+1][y+1] = true;
+		if(map[x + 1 + mapWidth * y] == BLOCK
+		&& map[x + mapWidth * (y + 1)] == BLOCK) {
+			walked[x + 1 + mapWidth * (y + 1)] = true;
 		}
 	}
 	
@@ -476,7 +474,7 @@ public class Dungeon {
 	 */
 	public Event getEvent(int x, int y) {
 		
-		return event[x][y];
+		return event[x + mapWidth * y];
 	}
 	
 	/**
@@ -486,7 +484,7 @@ public class Dungeon {
 	 */
 	public void clearEvent(int x, int y) {
 		
-		event[x][y] = Event.NONE;
+		event[x + mapWidth * y] = Event.NONE;
 	}
 	
 	/**
@@ -498,7 +496,7 @@ public class Dungeon {
 		int total = 0;
 		for(int y = 0; y < mapHeight; y++) {
 			for(int x = 0; x < mapWidth; x++) {
-				if(walked[x][y] == true) {
+				if(walked[x + mapWidth * y] == true) {
 					total++;
 				}
 			}
