@@ -243,9 +243,6 @@ public class MainController {
 			if(player.getStamina() <= 0) {
 				String message = messageSource.getMessage("outOfStamina", null, locale);
 				model.addAttribute("msg", message);
-				/*
-				 * inGameBtn使用箇所
-				 */
 				model.addAttribute("inGameBtn", "Game Over");
 				model.addAttribute("disabled", "true");
 			}
@@ -278,11 +275,6 @@ public class MainController {
 			if(player.isKey()) {
 				message = messageSource.getMessage("goal", null, locale);
 				model.addAttribute("msg", message);
-				/*
-				 * inGameBtn使用箇所
-				 * モーダルウィンドウのボタンをView Resultにする？
-				 * inGameBtnをもうちょい上に表示する？
-				 */
 				model.addAttribute("inGameBtn", "View Results");
 				model.addAttribute("disabled", "true");
 				// ゴールフラグON
