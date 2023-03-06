@@ -18,12 +18,13 @@
     </div>
     <ul class="list-group list-group-flush">
       <div th:each="rank, st: ${rankList}">
-        <li class="list-group-item text-center" th:classappend="${number} == ${st.count} ? 'bg-info' : ''" th:text="${rank}"></li>
+        <li class="list-group-item text-center" th:classappend="${myRank} == ${st.count} ? 'bg-info' : ''" th:text="${rank}"></li>
       </div>
     </ul>
     <div class="card-body text-center">
+      <span th:text="${yourRankIs}"></span><br>
       <form method="POST" action="/maze/ranking">
-        <input type="submit" class="btn-sm btn-outline-primary w-100px" th:value="#{goToTitle}"><br>
+        <input type="submit" class="btn-sm btn-outline-primary w-100px mt-2" th:value="#{goToTitle}"><br>
       </form>
     </div>
     <div class="card-footer">

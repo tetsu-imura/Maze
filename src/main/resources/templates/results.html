@@ -26,12 +26,10 @@
     </ul>
     <div class="card-body text-center">
       <form method="POST" action="/maze/results">
-        <input th:if="${rankIn}" type="text" class="mb-2" id="name" name="name" minlength="3" maxlength="12" placeholder="Your name" required autofocus>
-        <input th:if="${rankIn}" type="hidden" id="score" name="score" th:value="${totalScore}">
-        <input th:if="${rankIn}" type="hidden" id="number" name="number" th:value="${number}">
-        <br th:if="${rankIn}">
-        <input th:if="${rankIn}" type="submit" class="btn-sm btn-outline-primary w-100px" th:value="#{enterBtn}">
-        <input th:unless="${rankIn}" type="submit" class="btn-sm btn-outline-primary w-100px" th:value="#{finBtn}">
+        <input type="text" class="mb-2" id="name" name="name" minlength="3" maxlength="12" placeholder="Your name" required autofocus>
+        <input type="hidden" id="score" name="score" th:value="${totalScore}">
+        <br>
+        <input type="submit" class="btn-sm btn-outline-primary w-100px" th:value="#{enterBtn}">
       </form>
     </div>
     <div class="card-footer">

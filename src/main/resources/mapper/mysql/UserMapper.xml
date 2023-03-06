@@ -27,5 +27,17 @@
       (#{name}, #{score}, #{date})
     ;
   </insert>
+  
+  <select id="getMyRank" resultType="Integer">
+    SELECT FIND_IN_SET(
+      #{score}, (
+        SELECT GROUP_CONCAT(
+          score ORDER BY score DESC
+        )
+        FROM users
+      )
+    ) AS myrank
+    ;
+  </select>
 
 </mapper>

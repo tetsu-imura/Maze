@@ -78,7 +78,7 @@
   <!-- モーダルウィンドウ(${msg})-->
   <th:block th:if="${msg}">
     <div class="modal" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true"
-      data-bs-backdrop="static"><!-- 背景クリックで消えないように設定 -->
+      data-bs-backdrop="true"><!-- staticにすると背景クリックでモーダルが消えない -->
       <div class="modal-dialog modal-sm modal-dialog-center">
         <div class="modal-content">
           <div class="modal-header">

@@ -55,11 +55,13 @@ public class MainController {
 	
 	/**
 	 * タイトル画面
+	 * @param model
 	 * @return
 	 */
 	@GetMapping("")
-	public String getTitle(
+	public String title(
 			Model model) {
+		log.info("----- title() -----");
 		
 		model.addAttribute("version", VERSION);
 		
@@ -68,10 +70,11 @@ public class MainController {
 	
 	/**
 	 * タイトル画面でStart押下
-	 * @return
+	 * @return 画面
 	 */
 	@PostMapping("")
 	public String postTitle() {
+		log.info("----- postTitle() -----");
 		
 		// 迷路クラス生成。
 		dungeon = new Dungeon(MAP_WIDTH, MAP_HEIGHT);
@@ -94,13 +97,15 @@ public class MainController {
 	/**
 	 * Maze(疑似3D)画面
 	 * @param model
-	 * @return
+	 * @param locale
+	 * @return 画面
 	 */
 	@GetMapping("/maze")
 	public String maze(
 			Model model,
 			Locale locale
 			) {
+		log.info("----- maze() -----");
 		
 		// Viewに位置と方向を設定する。
 		dungeon.setView(player.getX(), player.getY(), player.getDir());
@@ -223,7 +228,8 @@ public class MainController {
 	/**
 	 * 前に進む。
 	 * @param model
-	 * @return
+	 * @param locale
+	 * @return maze画面
 	 */
 	@PostMapping(value="/maze", params="forward")
 	public String forward(
@@ -260,6 +266,7 @@ public class MainController {
 	 * @param x
 	 * @param y
 	 * @param model
+	 * @param locale
 	 */
 	private void eventProcess(int x, int y, Model model, Locale locale) {
 		
@@ -333,7 +340,8 @@ public class MainController {
 	/**
 	 * 左を向く。
 	 * @param model
-	 * @return
+	 * @param locale
+	 * @return maze画面
 	 */
 	@PostMapping(value="/maze", params="left")
 	public String left(
@@ -349,7 +357,8 @@ public class MainController {
 	/**
 	 * 右を向く。
 	 * @param model
-	 * @return
+	 * @param locale
+	 * @return maze画面
 	 */
 	@PostMapping(value="/maze", params="right")
 	public String right(
@@ -365,7 +374,8 @@ public class MainController {
 	/**
 	 * 後ろを向く。
 	 * @param model
-	 * @return
+	 * @param locale
+	 * @return maze画面
 	 */
 	@PostMapping(value="/maze", params="turn")
 	public String turn(
@@ -381,10 +391,11 @@ public class MainController {
 	/**
 	 * Exitボタン押下
 	 * @param model
-	 * @return
+	 * @return 画面
 	 */
 	@PostMapping(value="/maze", params="exit")
 	public String exit() {
+		log.info("----- exit() -----");
 		
 		// リザルト画面へ遷移
 		return "redirect:/maze/results";
@@ -393,7 +404,7 @@ public class MainController {
 	/**
 	 * Map(ミニマップ)画面
 	 * @param model
-	 * @return
+	 * @return 画面
 	 */
 	@GetMapping("/map")
 	public String map(Model model) {
@@ -429,13 +440,16 @@ public class MainController {
 	/**
 	 * メニュー画面
 	 * @param model
-	 * @return
+	 * @param locale
+	 * @return 画面
 	 */
 	@GetMapping("/menu")
 	public String menu(
 			Model model,
 			Locale locale
 			) {
+		log.info("----- menu() -----");
+		
 		String str = "";
 		
 		// Ｘ座標、Ｙ座標
@@ -470,13 +484,11 @@ public class MainController {
 	
 	/**
 	 * メニュー画面　Give Upボタン押下
-	 * @param model
-	 * @return
+	 * @return 画面
 	 */
 	@PostMapping("/menu")
-	public String giveup(
-			Model model
-			) {
+	public String giveup() {
+		log.info("----- giveup() -----");
 		
 		// タイトル画面へ遷移
 		return "redirect:/maze";
@@ -486,12 +498,13 @@ public class MainController {
 	 * リザルト画面
 	 * @param model
 	 * @param locale
-	 * @return
+	 * @return 画面
 	 */
 	@GetMapping("/results")
 	public String results(
 			Model model,
 			Locale locale) {
+		log.info("----- results() -----");
 		
 		String str = "";
 		
@@ -535,22 +548,6 @@ public class MainController {
 		int totalScore = itemScore + staminaScore + walkedScore + keyScore + goalScore;
 		model.addAttribute("totalScore", totalScore);
 		
-		// DBからランキングを取得する。
-		List<User> best5List = userService.getBest5();
-		
-		// ランキング内に入っているかチェックする。
-		int rank = 1;
-		for(User user: best5List) {
-			if(totalScore >= user.getScore()) {
-				// 名前入力テキストボックスを表示する。
-				model.addAttribute("rankIn", "true");
-				// プレイヤーの順位
-				model.addAttribute("rank", rank);
-				break;
-			}
-			rank++;
-		}
-		
 		// バージョン表示
 		model.addAttribute("version", VERSION);
 		
@@ -558,28 +555,34 @@ public class MainController {
 	}
 	
 	/**
-	 * リザルト画面　Finボタン押下
-	 * @param model
-	 * @return
+	 * リザルト画面　Enterボタン押下
+	 * @param name
+	 * @param score
+	 * @param redirectAttributes
+	 * @param locale
+	 * @return 画面
 	 */
 	@PostMapping("/results")
-	public String fin(
-			@RequestParam(name="name", required=false) String name,
-			@RequestParam(name="score", required=false) String score,
-			@RequestParam(name="number", required=false) String number,
-			RedirectAttributes redirectAttributes
+	public String postResults(
+			@RequestParam(name="name") String name,
+			@RequestParam(name="score") String score,
+			RedirectAttributes redirectAttributes,
+			Locale locale
 			) {
+		log.info("----- postResults() -----");
 		
-		// ランキング内にはいった場合
-		if(name != null) {
-			
-			// DBを更新する。
-			Date date = new Date();
-			userService.addNewRanker(name, Integer.parseInt(score), date);
-			
-			// リダイレクト先にパラメータを送る。
-			redirectAttributes.addFlashAttribute("number", number);
-		}
+		// DBを更新する。
+		Date date = new Date();
+		userService.addNewRanker(name, Integer.parseInt(score), date);
+		
+		// 順位を取得し、リダイレクト先にパラメータを送る。
+		int myRank = userService.getMyRank(Integer.parseInt(score));
+		redirectAttributes.addFlashAttribute("myRank", myRank);
+		
+		String rankStr = getRankStr(myRank);
+		String str = messageSource.getMessage("yourRankIs",
+				new String[] {rankStr}, locale);
+		redirectAttributes.addFlashAttribute("yourRankIs", str);
 		
 		// ランキング画面へ遷移
 		return "redirect:/maze/ranking";
@@ -589,13 +592,13 @@ public class MainController {
 	 * ランキング画面
 	 * @param model
 	 * @param locale
-	 * @return
+	 * @return 画面
 	 */
 	@GetMapping("/ranking")
 	public String ranking(
 			Model model,
 			Locale locale) {
-		log.info("----- fin() -----");
+		log.info("----- ranking() -----");
 		
 		// DBからランキングを取得し、Modelに登録する。
 		List<User> best5List = userService.getBest5();
@@ -605,20 +608,7 @@ public class MainController {
 		List<String> rankList = new ArrayList<String>();
 		int index = 1;
 		for(User user : best5List) {
-			String rank = "";
-			switch(index) {
-			case 1:
-				rank = "1st";
-				break;
-			case 2:
-				rank = "2nd";
-				break;
-			case 3:
-				rank = "3rd";
-				break;
-			default:
-				rank = index + "th";
-			}
+			String rank = getRankStr(index);
 			String str = messageSource.getMessage("rank",
 					new String[] {rank, user.getName(), Integer.toString(user.getScore())}, locale);
 			
@@ -635,13 +625,64 @@ public class MainController {
 	
 	/**
 	 * ランキング画面　Go To Titleボタン押下
-	 * @param model
-	 * @return
+	 * @return 画面
 	 */
 	@PostMapping("/ranking")
-	public String ranking() {
+	public String postRanking() {
+		log.info("----- postRanking() -----");
 		
 		// タイトル画面へ遷移
 		return "redirect:/maze";
+	}
+	
+	/**
+	 * ランキング順位の文字列を取得する。
+	 * @param rank
+	 * @return ランキング順位の文字列
+	 */
+	public String getRankStr(int rank) {
+		
+		// 下二桁を取り出す。
+		int twoDigits = rank % 100; 
+		
+		String str = "";
+		switch(twoDigits) {
+		case 1:
+		case 21:
+		case 31:
+		case 41:
+		case 51:
+		case 61:
+		case 71:
+		case 81:
+		case 91:
+			str = rank + "st";
+			break;
+		case 2:
+		case 22:
+		case 32:
+		case 42:
+		case 52:
+		case 62:
+		case 72:
+		case 82:
+		case 92:
+			str = rank + "nd";
+			break;
+		case 3:
+		case 23:
+		case 33:
+		case 43:
+		case 53:
+		case 63:
+		case 73:
+		case 83:
+		case 93:
+			str = rank + "rd";
+			break;
+		default:
+			str = rank + "th";
+		}
+		return str;
 	}
 }

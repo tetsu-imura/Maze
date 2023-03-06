@@ -30,4 +30,9 @@ public class UserServiceImpl implements UserService {
 	public void addNewRanker(String name, int score, Date date) {
 		mapper.addNewRanker(name, score, date);
 	}
+	
+	@Override
+	public int getMyRank(int score) {
+		return mapper.getMyRank(score);
+	}
 }

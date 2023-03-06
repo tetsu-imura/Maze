@@ -15,4 +15,6 @@ public interface UserService {
 	public List<User> getBest5();
 	
 	public void addNewRanker(String name, int score, Date date);
+	
+	public int getMyRank(int score);
 }
