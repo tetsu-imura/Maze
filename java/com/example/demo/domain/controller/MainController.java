@@ -1,6 +1,7 @@
 package com.example.demo.domain.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -645,44 +646,21 @@ public class MainController {
 		// 下二桁を取り出す。
 		int twoDigits = rank % 100; 
 		
+		int xst[] = {1, 21, 31, 41, 51, 61, 71, 81, 91};	// 序数詞'st'の数
+		int xnd[] = {2, 22, 32, 42, 52, 62, 72, 82, 92};	// 序数詞'nd'の数
+		int xrd[] = {3, 23, 33, 43, 53, 63, 73, 83, 93};	// 序数詞'rd'の数
+		
 		String str = "";
-		switch(twoDigits) {
-		case 1:
-		case 21:
-		case 31:
-		case 41:
-		case 51:
-		case 61:
-		case 71:
-		case 81:
-		case 91:
+		if(Arrays.asList(xst).contains(twoDigits)) {
 			str = rank + "st";
-			break;
-		case 2:
-		case 22:
-		case 32:
-		case 42:
-		case 52:
-		case 62:
-		case 72:
-		case 82:
-		case 92:
+		} else if(Arrays.asList(xnd).contains(twoDigits)) {
 			str = rank + "nd";
-			break;
-		case 3:
-		case 23:
-		case 33:
-		case 43:
-		case 53:
-		case 63:
-		case 73:
-		case 83:
-		case 93:
+		} else if(Arrays.asList(xrd).contains(twoDigits)) {
 			str = rank + "rd";
-			break;
-		default:
+		} else {
 			str = rank + "th";
 		}
+		
 		return str;
 	}
 }
