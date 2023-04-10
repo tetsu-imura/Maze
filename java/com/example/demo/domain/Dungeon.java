@@ -19,8 +19,8 @@ public class Dungeon {
 	final static int BLOCK			= 1;	// 壁
 	final static int GOAL			= 2;	// ゴール
 	final static int UNKNOWN		= -1;	// 未知
-	final static int VIEW_W		= 5;	// View領域の横幅
-	final static int VIEW_H		= 4;	// View領域の立幅
+	final static int VIEW_W			= 5;	// View領域の横幅
+	final static int VIEW_H			= 4;	// View領域の立幅
 	final static int MINIMAP_W		= 15;	// ミニマップの横幅
 	final static int MINIMAP_H		= 15;	// ミニマップの縦幅
 	
