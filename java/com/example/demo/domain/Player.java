@@ -32,7 +32,7 @@ public class Player {
 		this.dir	= dir;
 		
 		steps		= 0;
-		stamina		= 200;
+		stamina		= 255;
 		key			= false;
 		score		= 0;
 		goal		= false;
